@@ -1,0 +1,144 @@
+<style>
+  /* modyfying the background */
+.bg-img {
+  background-image: url("../static/skin-cancer.png");
+  min-height: 380px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  }
+/* styling the container */
+.container {
+  position: center;
+  left: 400;
+  margin: 20px;
+  max-width: 700px;
+  padding-left: 100px;
+  background-color:transparent;
+  text-align: center;
+} 
+/* styling the input form */
+.file {
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  position: absolute;
+}
+/* styling the button from */
+.but{
+  display: block;
+  position: relative;
+  width: 100px;
+  height: 50px;
+  border-radius: 25px;
+  background: linear-gradient(40deg,#ff6ec4,#7873f5);
+  box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
+  transition: transform .2s ease-out;
+}
+/* styling the inout label. */
+.file-input label{
+  display: block;
+  position: relative;
+  width: 300px;
+  height: 70px;
+  border-radius: 25px;
+  background: linear-gradient(40deg,#ff6ec4,#7873f5);
+  box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 20px;
+  transition: transform .2s ease-out;
+}
+/* styling the javascript */
+.file-name {
+    position: absolute;
+    bottom: -39px;
+    font-size: 15px;
+    color: rgb(56, 2, 107);
+}
+/* changing the cursor on hovering on the label and button. */
+input:hover + label,button
+input:focus + label,button {
+  transform: scale(1.02);
+}
+
+/* Adding an outline to the label on focus */
+input:focus + label,button {
+  outline: 1px solid #000;
+  outline: -webkit-focus-ring-color auto 2px;
+}
+/* applying the font family. */
+body, h1, h2, h3, h4, h5, h6 {
+  font-family: sans-serif;
+}
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <h1 class="jumbotron" style="background:transparent !important; text-align:center; color:blueviolet;">Skin Cancer Analysis Using Deep Learning</h1>
+    <br><br>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- loading the bootstrap css -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- loading the ajax -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body class="bg-img">
+    <div class="container">
+        <form class="form-horizontal" action="/submit" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+              
+                <div class="file-input">
+                    <input type="file" id="file" class="file" name="my_image">
+                    <label for="file">Upload Skin Lesion Image
+                        <p class="file-name"></p>
+                    </label>
+                    <script>
+                        const file = document.querySelector('#file');
+                        file.addEventListener('change', (e) => {
+                            // Get the selected file
+                            const [file] = e.target.files;
+                            // Get the file name and size
+                            const { name: fileName, size } = file;
+                            // Convert size in bytes to kilo bytes
+                            const fileSize = (size / 1000).toFixed(2);
+                            // Set the text content
+                            const fileNameAndSize = `${fileName} - ${fileSize}KB`;
+                            document.querySelector('.file-name').textContent = fileNameAndSize;
+                        });
+                    </script>
+
+                </div>
+            </div>
+            <div class="form-group" style="padding-top:20px ;">
+                <div >
+                    <button type="submit" class="but">Predict</button>
+                </div>
+            </div>
+        </form>
+        <!-- output of the prediction data transferred from the flask python app where the model is loaded and the test image is predicted -->
+        {% if prediction %}
+        <img src="data:image/jpeg;base64,{{ img_data }}" height="224px" width="224px" style="border: 5px solid rgb(78, 39, 39);">
+        <h2 style="color:rgb(11, 0, 62);">Classification of Skin Lesion: <i style="color: rgb(56, 2, 107);"> {{prediction}} </i></h2>
+        {% endif %}
+    </div>
+</body>
+</html>
